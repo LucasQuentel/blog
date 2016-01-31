@@ -1,7 +1,5 @@
 <?php
-
 include 'global.php';
-
 
 ?>
 
@@ -16,7 +14,7 @@ include 'global.php';
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Blog Post - Start Bootstrap Template</title>
+    <title>Blog</title>
 
     <!-- Bootstrap Core CSS -->
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
@@ -24,9 +22,6 @@ include 'global.php';
 
     <!-- Custom CSS -->
     <link href="css/blog-post.css" rel="stylesheet">
-
-    <!-- Imported Polymer.js stuff -->
-    <link rel="import" href="https://raw.githubusercontent.com/PolymerElements/paper-toast/master/paper-toast.html">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -62,19 +57,29 @@ include 'global.php';
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li>
-                        <a href="index.php">Blogposts</a>
-                    </li>
+                    <?php
+                    if(isset($_SESSION['uid'])) {
+                    	?>
+						<li><a href="index.php">Blogposts</a></li>                    	
+						<li><a href="#" data-toggle="modal" data-target="#SearchModal">Search</a></li>
+
+                    	<?php
+                    }
+
+                    ?>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                 <?php
-                if(isset($_SESSION['uid'])) {
-                	?>
-                	<li><a href="#">Welcome <?php echo $_SESSION['una']; ?></a></li>
+
+if (isset($_SESSION['uid'])) {
+?>
+                	<li><a href="#">Welcome <?php
+	echo $_SESSION['una']; ?></a></li>
                 	<li><a href="index.php?action=Logout">Logout</a></li>
                 	<?php
-                } else {
-                ?>
+}
+else {
+?>
 
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
@@ -101,7 +106,8 @@ include 'global.php';
 			</ul>
         </li>
 
-                <?php } ?>
+                <?php
+} ?>
                                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -115,7 +121,7 @@ include 'global.php';
         <div class="row">
 
             <!-- Blog Post Content Column -->
-            <div class="col-lg-8">
+            <div class="col-lg-12">
 
                 <!-- Blog Post -->
 
@@ -123,55 +129,62 @@ include 'global.php';
                 <?php
 
 if ($action == "Login") {
-    
-    $email = $sql->real_escape_string($_POST['email']);
-    $pass  = $sql->real_escape_string($_POST['pass']);
-    if (!isset($email) XOR !isset($pass)) {
-        throw_error("Please enter an email and a password");
-    } else if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        throw_error("The email you inserted is not in the right format.");
-    } else {
-        $query = $sql->query("SELECT email FROM user WHERE email='$email'");
-        if (!$query) {
-            throw_error("This account does not exist.");
-        } else {
-            $q    = mysqli_fetch_object($sql->query("SELECT * FROM user WHERE email='$email'"));
-            $hash = hash('whirlpool', $pass);
-            if ($hash != $q->password) {
-                throw_error("The password is wrong.");
-            } else {
-                $_SESSION['uid'] = $q->userID;
-                $_SESSION['una'] = $q->username;
-                echo "<script>location.href='index.php';</script>";
-            }
-        }
-    }
-    
-} else if($action == "Logout") {
-    unset($_SESSION['uid']);
-    unset($_SESSION['una']);
-    echo "<script>location.href='index.php'</script>";
-} else {
-	if(isset($_SESSION['uid'])) {
+	$email = $sql->real_escape_string($_POST['email']);
+	$pass = $sql->real_escape_string($_POST['pass']);
+	if (!isset($email) XOR !isset($pass)) {
+		throw_error("Please enter an email and a password");
+	}
+	else
+	if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		throw_error("The email you inserted is not in the right format.");
+	}
+	else {
+		$query = $sql->query("SELECT email FROM user WHERE email='$email'");
+		if (!$query) {
+			throw_error("This account does not exist.");
+		}
+		else {
+			$q = mysqli_fetch_object($sql->query("SELECT * FROM user WHERE email='$email'"));
+			$hash = hash('whirlpool', $pass);
+			if ($hash != $q->password) {
+				throw_error("The password is wrong.");
+			}
+			else {
+				$_SESSION['uid'] = $q->userID;
+				$_SESSION['una'] = $q->username;
+				echo "<script>location.href='index.php';</script>";
+			}
+		}
+	}
+}
+elseif ($action == "Logout") {
+	unset($_SESSION['uid']);
+	unset($_SESSION['una']);
+	echo "<script>location.href='index.php'</script>";
+}
+else {
+	if (isset($_SESSION['uid'])) {
 		$uid = $_SESSION['uid'];
 		$una = $_SESSION['una'];
-		if(!$page) {
-		echo "<h1>Welcome ".$una."!</h1>";
-		?>
+		if (!$page) {
+			echo "<h1>Welcome " . $una . "!</h1>";
+?>
 		<div class="panel panel-primary">
 			<div class="panel-heading">Publish a blog post</div>
 			<?php
-			    if($action == "Publish") {
-					$text = $sql->real_escape_string($_POST['textarea']);
-					$title = $sql->real_escape_string($_POST['title']);
-					if(empty($text) || empty($title)) {
-						throw_error("Please enter something in the textarea to write a blogpost.");
-					} else {
-						$sql->query("INSERT INTO `posts` (`title`, `text`, `userID`, `created_at`, `comments`) VALUES ('".$title."', '".nl2br($text)."', '".$uid."', '".date("Y-m-d H:i")."', '0');");
-						echo "<div class='alert alert-success'>You published a new post.</div>";
-					}
+			if ($action == "Publish") {
+				$text = $sql->real_escape_string($_POST['textarea']);
+				$title = $sql->real_escape_string($_POST['title']);
+				if (empty($text) || empty($title)) {
+					throw_error("Please enter something in the textarea to write a blogpost.");
 				}
-				?>
+				else {
+					$sql->query("INSERT INTO `posts` (`title`, `text`, `userID`, `created_at`, `comments`) VALUES ('" . $title . "', '" . nl2br($text) . "', '" . $uid . "', '" . date("Y-m-d H:i") . "', '0');");
+					echo "<div class='alert alert-success'>You published a new post.</div>";
+				}
+			}
+
+?>
   			<form action="index.php?action=Publish" method="POST" role="form" class="form-horizontal">
   			<div class="panel-body">
      			<div class="form-group">
@@ -192,55 +205,70 @@ if ($action == "Login") {
   					</div>
 				</div>  				
   			</div>
+  			</form>
 		</div>
 
 		<hr />
 
 		<?php
-		$query = $sql->query("SELECT * FROM posts ORDER BY postID DESC");
-		while($row = mysqli_fetch_object($query)) {
-			$user = mysqli_fetch_object($sql->query("SELECT * FROM user WHERE userID=".$row->userID));
-			?>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-
-					<h1><?php echo $row->title; ?> <small>by <?php echo $user->username; ?></small></h1>
-					<p></p>
-				</div>
-				<div class="panel-body">
-					<p class="lead"><?php echo $row->text; ?></p>
-				</div>
-				<div class="panel-footer">
-				<i class="fa fa-comments"></i> <?php echo '<a href="index.php?page=Comments&id='.$row->postID.'">'.$row->comments.' Comment(s)</a>'; ?>  | <span class="glyphicon glyphicon-time"></span> Posted: <?php echo $row->created_at; ?>
-				</div>
-			</div>
-
-			<?php
-		}
-		?>
-		<?php
-	} elseif($page == "Comments") {
-		if(!isset($id) || $id <= 0) {
-			echo "<script>location.href='index.php';</script>";
-		} else {
-			$query = $sql->query("SELECT * FROM posts WHERE postID='$id'");
-			if(!$query) {
-				echo "<script>location.href='index.php';</script>";
-			} else {
-				$pdata = mysqli_fetch_object($query);
-				$user = mysqli_fetch_object($sql->query("SELECT * FROM user WHERE userID=".$pdata->userID));
+			$query = $sql->query("SELECT * FROM posts ORDER BY postID DESC");
+			while ($row = mysqli_fetch_object($query)) {
+				$user = mysqli_fetch_object($sql->query("SELECT * FROM user WHERE userID=" . $row->userID));
 ?>
 			<div class="panel panel-default">
 				<div class="panel-heading">
 
-					<h1><?php echo $pdata->title; ?> <small>by <?php echo $user->username; ?></small></h1>
+					<h1><?php
+				echo $row->title; ?> <small>by <?php
+				echo $user->username; ?></small></h1>
 					<p></p>
 				</div>
 				<div class="panel-body">
-					<p class="lead"><?php echo $pdata->text; ?></p>
+					<p class="lead"><?php
+				echo $row->text; ?></p>
 				</div>
 				<div class="panel-footer">
-				<i class="fa fa-comments"></i> <?php echo $pdata->comments; ?> Comment(s) | <span class="glyphicon glyphicon-time"></span> Posted: <?php echo $pdata->created_at; ?>
+				<i class="fa fa-comments"></i> <?php
+				echo '<a href="index.php?page=Comments&id=' . $row->postID . '">' . $row->comments . ' Comment(s)</a>'; ?>  | <span class="glyphicon glyphicon-time"></span> Posted: <?php
+				echo $row->created_at; ?>
+				</div>
+			</div>
+
+			<?php
+			}
+
+?>
+		<?php
+		}
+		elseif ($page == "Comments") {
+			if (!isset($id) || $id <= 0) {
+				echo "<script>location.href='index.php';</script>";
+			}
+			else {
+				$query = $sql->query("SELECT * FROM posts WHERE postID='$id'");
+				if (!$query) {
+					echo "<script>location.href='index.php';</script>";
+				}
+				else {
+					$pdata = mysqli_fetch_object($query);
+					$user = mysqli_fetch_object($sql->query("SELECT * FROM user WHERE userID=" . $pdata->userID));
+?>
+			<div class="panel panel-default">
+				<div class="panel-heading">
+
+					<h1><?php
+					echo $pdata->title; ?> <small>by <?php
+					echo $user->username; ?></small></h1>
+					<p></p>
+				</div>
+				<div class="panel-body">
+					<p class="lead"><?php
+					echo $pdata->text; ?></p>
+				</div>
+				<div class="panel-footer">
+				<i class="fa fa-comments"></i> <?php
+					echo $pdata->comments; ?> Comment(s) | <span class="glyphicon glyphicon-time"></span> Posted: <?php
+					echo $pdata->created_at; ?>
 				</div>
 			</div>
 			<h3>Comments</h3>
@@ -248,18 +276,21 @@ if ($action == "Login") {
 			<div class="panel panel-primary">
 			<div class="panel-heading">Comment</div>
 			<?php
-			    if($action == "comment") {
-					$text = $sql->real_escape_string($_POST['textarea']);
-					if(empty($text)) {
-						throw_error("Please enter something in the textarea to write a comment.");
-					} else {
-						$sql->query("INSERT INTO `comments` (`postID`, `userID`, `comment`, `created_at`) VALUES ('".$id."', '".$uid."', '".nl2br($text)."', '".date("Y-m-d H:i")."');");
-						$sql->query("UPDATE posts SET comments=comments+1 WHERE postID='".$id."'");
-						echo "<div class='alert alert-success'>You published a new comment.</div>";
+					if ($action == "comment") {
+						$text = $sql->real_escape_string($_POST['textarea']);
+						if (empty($text)) {
+							throw_error("Please enter something in the textarea to write a comment.");
+						}
+						else {
+							$sql->query("INSERT INTO `comments` (`postID`, `userID`, `comment`, `created_at`) VALUES ('" . $id . "', '" . $uid . "', '" . nl2br($text) . "', '" . date("Y-m-d H:i") . "');");
+							$sql->query("UPDATE posts SET comments=comments+1 WHERE postID='" . $id . "'");
+							echo "<div class='alert alert-success'>You published a new comment.</div>";
+						}
 					}
-				}
-				?>
-  			<?php echo '<form action="index.php?page=Comments&action=comment&id='.$id.'" method="POST" role="form" class="form-horizontal">'; ?>
+
+?>
+  			<?php
+					echo '<form action="index.php?page=Comments&action=comment&id=' . $id . '" method="POST" role="form" class="form-horizontal">'; ?>
   			<div class="panel-body">			
     			<div class="form-group">
   					<div class="col-md-12">                     
@@ -274,53 +305,73 @@ if ($action == "Login") {
   					</div>
 				</div>  				
   			</div>
+  			</form>
 		</div>
-<?php			
-			$cdata = $sql->query("SELECT * FROM comments WHERE postID='$id' ORDER BY commentID DESC");	
-			while($row = mysqli_fetch_object($cdata)) {
-				$user = mysqli_fetch_object($sql->query("SELECT * FROM user WHERE userID='".$row->userID."'"));
-				?>
+
+<?php
+					$cdata = $sql->query("SELECT * FROM comments WHERE postID='$id' ORDER BY commentID DESC");
+					while ($row = mysqli_fetch_object($cdata)) {
+						$user = mysqli_fetch_object($sql->query("SELECT * FROM user WHERE userID='" . $row->userID . "'"));
+?>
 			<div class="panel panel-default">
 				<div class="panel-body">
-					<p class="lead"><?php echo $row->comment; ?></p>
+					<p class="lead"><?php
+						echo $row->comment;
+ ?></p>
 				</div>
 				<div class="panel-footer">
-				<i class="fa fa-comments"></i> Posted by <?php echo $user->username; ?> | <span class="glyphicon glyphicon-time"></span> Posted: <?php echo $row->created_at; ?>
+				<i class="fa fa-comments"></i> Posted by <?php
+						echo $user->username; ?> | <span class="glyphicon glyphicon-time"></span> Posted: <?php
+						echo $row->created_at; ?>
 				</div>
 			</div>				
 				<?php
-			}			
+					}
+				}
+			}
+		} elseif($page == "Search") {
+			$s = $sql->real_escape_string($_POST['search']);
+			if(empty($s)) {
+				throw_error("Please enter something to search!");
+			} else {
+				$res = $sql->query("SELECT * FROM `posts` WHERE `title` LIKE '%".$s."%' XOR `text` LIKE '%".$s."%'  ORDER BY postID DESC");
+				if($res->num_rows == 0) {
+					throw_error("We couldn't find anything containing ' ".$s." ' :( ");
+				} else {
+					if($res->num_rows == 1)
+						echo "<h3>1 Result</h3><hr>";
+					else
+						echo "<h3>".$res->num_rows." Results</h3><hr>";
+
+					while($row = mysqli_fetch_object($res)) {
+					$user = mysqli_fetch_object($sql->query("SELECT * FROM user WHERE userID=" . $row->userID));						
+					?>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+
+								<h1><?php
+								echo $row->title; ?> <small>by <?php
+								echo $user->username; ?></small></h1>
+							</div>
+							<div class="panel-body">
+								<p class="lead"><?php
+									echo $row->text; ?></p>
+							</div>
+						<div class="panel-footer">
+						<i class="fa fa-comments"></i> <?php
+						echo '<a href="index.php?page=Comments&id=' . $row->postID . '">' . $row->comments . ' Comment(s)</a>'; ?>  | <span class="glyphicon glyphicon-time"></span> Posted: <?php
+						echo $row->created_at; ?>
+				</div>
+			</div>
+			<?php
+					}				
+				}
 			}
 		}
-
-	}
-
-	} else {
-
 	}
 }
+
 ?>
-
-            </div>
-
-            <!-- Blog Sidebar Widgets Column -->
-            <div class="col-md-4">
-
-                <!-- Blog Search Well -->
-                <div class="well">
-                    <h4>Blog Search</h4>
-                    <form action="index.php?page=Search" method="POST" role="form">
-                    <div class="input-group">
-                        <input type="text" name="search" class="form-control">
-                        <span class="input-group-btn">
-                            <button class="btn btn-default" type="submit">
-                                <span class="glyphicon glyphicon-search"></span>
-                        </button>
-                        </span>
-                    </div>
-                    </form>
-                    <!-- /.input-group -->
-                </div>                
 
             </div>
 
@@ -343,10 +394,33 @@ if ($action == "Login") {
     <!-- /.container -->
 
 
-    <!-- Polymer Stuff! -->
-    <paper-toast id="error_login_1" text="Please set an email and a password to login."></paper-toast>
 
-    <!-- jQuery -->
+	<!-- JS stuff -->
+<div class="modal fade" id="SearchModal" tabindex="-1" role="dialog" aria-labelledby="SearchModal">
+  	<div class="modal-dialog" role="document">
+  		<form action="index.php?page=Search" method="POST" role="form" class="form-horitontal">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        		<h4 class="modal-title" id="myModalLabel">Search</h4>
+      		</div>
+      		<div class="modal-body">
+       			<div class="form-group">
+       				<div class="col-md-12">
+						<input id="search" type="text" name="search" placeholder="What do you want to search after?" class="form-control" >
+       				</div>
+       			</div><br />
+      		</div>
+      		<div class="modal-footer">
+        		<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        		<button type="submit" class="btn btn-primary">Search</button>
+     		</div>
+    	</div>
+    	</form>
+    </div>
+</div>
+
+	<!-- jQuery -->
     <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
@@ -357,3 +431,4 @@ if ($action == "Login") {
 </body>
 
 </html>
+ 
