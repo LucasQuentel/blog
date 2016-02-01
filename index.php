@@ -162,7 +162,73 @@ elseif ($action == "Logout") {
 	unset($_SESSION['una']);
 	echo "<script>location.href='index.php'</script>";
 }
-else {
+ elseif($page == "Register") {
+			?>
+			<div class="row">
+				<div class="col-lg-12">
+					<h1>Register on this blog</h1>
+					<?php
+					if($action == "register") {
+						$user = $sql->real_escape_string($_POST['user']);
+						$pass = $sql->real_escape_string($_POST['pass']);
+						$passr = $sql->real_escape_string(($_POST['passr']));
+						$email = $sql->real_escape_string(($_POST['email']));
+						$emailr = $sql->real_escape_string(($_POST['emailr']));
+						if(empty($user) || empty($pass) || empty($passr) || empty($email) || empty($emailr)) {
+							throw_error("Please complete the form to register.");
+						} elseif($pass != $passr) {
+							throw_error("The password is not the same as the confirmation.");
+						} elseif($email != $emailr) {
+							throw_erorr("The email is not the same as the confirmation.");
+						} else {
+							$db = $sql->query("SELECT * FROM user WHERE username='$user'");
+							if($db->num_rows != 0) {
+								throw_error("This user does already exist.");
+							} else {
+								$dbt = $sql->query("SELECT * FROM user WHERE email='$email'");
+								if($dbt->num_rows != 0) {
+									throw_error("This email is already used.");
+								} elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+										throw_error("The email you inserted is not in the right format.");
+								} else {
+									$salt = hash('whirlpool',$pass);
+									$sql->query("INSERT INTO user (username,email,password,created_at,posts,comments) VALUES ('$user','$email','$salt','".date("Y-m-d H:i")."',0,0);");
+									echo "<div class='alert alert-success'>Welcome! You successfully registered yourself!</div>";
+								}
+							}
+						}
+					}
+
+					?>
+					<form action="index.php?page=Register&action=register" method="POST" role="form" class="form-horizontal">
+						<div class="form-group">
+							<label for="user">Username</label>
+							<input type="text" name="user" class="form-control" id="user" placeholder="Username">
+						</div>
+						<div class="form-group">
+							<label for="pass">Password</label>
+							<input type="password" name="pass" class="form-control" id="pass" placeholder="Password">
+						</div>
+						<div class="form-group">
+							<label for="passr">Repeat Password</label>
+							<input type="password" name="passr" class="form-control" id="passr" placeholder="Repeat Password">
+						</div>
+						<div class="form-group">
+							<label for="email">E-mail</label>
+							<input type="email" name="email" class="form-control" id="email" placeholder="E-Mail">
+						</div>
+						<div class="form-group">
+							<label for="emailr">Repeat E-Mail</label>
+							<input type="email" name="emailr" class="form-control" id="emailr" placeholder="Repeat E-Mail">
+						</div>
+						<div class="form-group">
+							<input type="submit" value="Register" class="btn btn-primary">
+						</div>
+					</form>
+				</div>
+			</div>
+			<?php
+		} else {
 	if (isset($_SESSION['uid'])) {
 		$uid = $_SESSION['uid'];
 		$una = $_SESSION['una'];
@@ -219,7 +285,7 @@ else {
 				<div class="panel-heading">
 
 					<h1><?php
-				echo $row->title; ?> <small>by <?php
+				echo $row->title; ?> <small>by <?php		
 				echo $user->username; ?></small></h1>
 					<p></p>
 				</div>
