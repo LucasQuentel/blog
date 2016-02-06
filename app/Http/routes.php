@@ -12,7 +12,8 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+	$posts = DB::table('posts')->orderBy('id', 'desc')->get();
+    return view('welcome', compact('posts'));
 });
 
 /*
