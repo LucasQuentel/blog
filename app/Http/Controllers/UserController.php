@@ -9,9 +9,9 @@ use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
-    public function show($id) {
-    	$user = DB::table('users')->where('id',$id)->first();
-    	$posts = DB::table('posts')->where('creator', $user->name)->get();
+    public function show($username) {
+    	$posts = DB::table('posts')->where('creator', $username)->get();
+    	$user = DB::table('users')->where('name', $username)->first();
     	return view('profile')->with('user',$user)->with('posts',$posts);
     } 
 }

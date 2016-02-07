@@ -20,7 +20,7 @@
         @foreach($posts as $post)
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h1>{{ $post->title }} <small>by {{ $post->creator }}</small></h1>
+                        <h1>{{ $post->title }} <small>by <a href='/profile/{{ $post->creator }}'>{{ $post->creator }} </a></small></h1>
                     </div>
                     <div class="panel-body">
                         <p class="lead">{{ $post->post }}</p>

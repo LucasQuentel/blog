@@ -6,7 +6,7 @@
         <div class="col-md-10 col-md-offset-1">
                 <div class="panel panel-default">
                     <div class="panel-heading">
-                        <h1>{{ $posts->title }} <small>by {{ $posts->creator }}</small></h1>
+                        <h1>{{ $posts->title }} <small>by <a href='/profile/{{ $posts->creator }}'>{{ $posts->creator }}</a> </small></h1>
                     </div>
                     <div class="panel-body">
                         <p class="lead">{{ $posts->post }}</p>
@@ -48,9 +48,7 @@
                     <p class="lead">{{ $comment->comment}}
                 </div>
                 <div class="panel-footer">
-                <i class="fa fa-comments"></i> Posted by <?php
-                        echo $comment->creator; ?> | <span class="glyphicon glyphicon-time"></span> Posted: <?php
-                        echo $comment->created_at; ?>
+                <i class="fa fa-comments"></i> Posted by <a href='/profile/{{ $comment->creator}}'>{{{ $comment->creator }}}</a> | <span class="glyphicon glyphicon-time"></span> Posted: {{ $comment->created_at }}
                 </div>
             </div>  
 

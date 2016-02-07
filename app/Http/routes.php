@@ -38,5 +38,5 @@ Route::group(['middleware' => 'web'], function () {
     Route::post('/home/publish','BlogController@publish');
     Route::get('/post/{id}','BlogController@show');
     Route::post('/post/comment/{id}','BlogController@comment');
-    Route::get('profile/{id}','UserController@show');
+    Route::get('profile/{username}','UserController@show');
 });
