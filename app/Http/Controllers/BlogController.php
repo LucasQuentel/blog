@@ -28,4 +28,29 @@ class BlogController extends Controller
     	$posts = DB::table('posts')->orderBy('id', 'desc')->get();
         return view('home', compact('posts'));
     }   
+
+
+    public function show($id) {
+        $posts = DB::table('posts')->where('id', $id)->first();
+        $comments = DB::table('comments')->where('postID', $id)->orderBy('id', 'desc')->get();
+        return view('blog')->with('posts',$posts)->with('comments',$comments);
+    }
+
+    public function comment($id, Request $request) {
+        $this->validate($request, [
+            'textarea' => 'required',
+        ]);
+
+        DB::table('comments')->insert(
+            ['postID'     => $id, 
+             'comment'    => $request->input('textarea'), 
+             'creator'    => Auth::user()->name,
+             'created_at' => date("Y-m-d H:i:s"),
+             'updated_at' => date("Y-m-d H:i:s")]);
+
+        DB::table('posts')->where('id',$id)->increment('comments');
+        $posts = DB::table('posts')->where('id', $id)->first();
+        $comments = DB::table('comments')->where('postID', $id)->orderBy('id', 'desc')->get();
+        return view('blog')->with('posts',$posts)->with('comments',$comments);
+    }
 }

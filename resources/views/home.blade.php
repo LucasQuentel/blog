@@ -42,7 +42,7 @@
                         <p class="lead">{{ $post->post }}</p>
                     </div>
                     <div class="panel-footer">
-                        <i class="fa fa-comments"></i> {{ $post->comments }} Comments | 
+                        <i class="fa fa-comments"></i> <a href='/post/{{ $post->id }}'>{{ $post->comments }} Comments</a> | 
                         <span class="glyphicon glyphicon-time"></span> Posted: {{ $post->created_at }}
                 </div>
             </div>
