@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use DB;
 
 class HomeController extends Controller
@@ -26,6 +27,14 @@ class HomeController extends Controller
     public function index()
     {
         $posts = DB::table('posts')->orderBy('id', 'desc')->get();
-        return view('home', compact('posts'));
+        $all = true;
+        return view('home', compact('posts'))->with('all',$all);
+    }
+
+
+    public function me() {
+        $posts = DB::table('posts')->where('creator', Auth::user()->name)->orderBy('id','desc')->get();
+        $all = false;
+        return view('home', compact('posts'))->with('all',$all);
     }
 }

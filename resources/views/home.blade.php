@@ -31,7 +31,16 @@
                 </div>
             </div>
 
-
+            <h1>Latest blogposts    
+            <small style="font-size: 50%">
+            @if($all)
+            <a href="/home/" style="text-decoration: underline">all</a> | <a href="/home/me">only me</a>
+            @elseif(!$all)
+            <a href="/home/">all</a> | <a href="/home/me" style="text-decoration: underline">only me</a>
+            @else
+            <a href="/home/">all</a> | <a href="/home/me">only me</a>
+            @endif
+            </h1>
             <!--BLOG POSTS-->
             @foreach($posts as $post)
                 <div class="panel panel-default">
