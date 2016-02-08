@@ -40,6 +40,7 @@
             @else
             <a href="/home/">all</a> | <a href="/home/me">only me</a>
             @endif
+            </small>
             </h1>
             <!--BLOG POSTS-->
             @foreach($posts as $post)
