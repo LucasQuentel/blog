@@ -12,7 +12,13 @@
     <link href="https://fonts.googleapis.com/css?family=Lato:100,300,400,700" rel='stylesheet' type='text/css'>
 
     <!-- Styles -->
+    @if(Config::get('global.design') == 'default')
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    @elseif(Config::get('global.design') == 'custom')
+    <link href="{{ Config::get('global.custom') }} " rel="stylesheet">
+    @else
+    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/{{ Config::get('global.design') }}/bootstrap.min.css" rel="stylesheet">
+    @endif
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
 
     <style>
