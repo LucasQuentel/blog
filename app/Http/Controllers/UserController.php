@@ -14,4 +14,23 @@ class UserController extends Controller
     	$user = DB::table('users')->where('name', $username)->first();
     	return view('profile')->with('user',$user)->with('posts',$posts);
     } 
+
+    public function settings() {
+    	return view('settings');
+    }
+
+    public function changepw(Request $request) {
+    	$this->validate($request, [
+        	'oldpw' => 'required|min:6',
+        	'password' => 'required|min:6|confirmed',
+    	]);
+
+    	$oldpw = DB::table('users')->where('name', Auth::user()->name)->value('password');
+    	return view('settings');
+    }
+
+
+    public function changemail(Request $request) {
+    	return view('settings');
+    }
 }

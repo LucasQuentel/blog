@@ -41,8 +41,11 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/post/{id}','BlogController@show');
     Route::get('/profile/{username}','UserController@show');
     Route::get('/admin','AdminController@index');
+    Route::get('/settings', 'UserController@settings');
     //POST Routes
     Route::post('/home/publish','BlogController@publish');
     Route::post('/post/comment/{id}','BlogController@comment');
+    Route::post('/settings/update/password', 'UserController@changepw');
+    Route::post('/settings/update/email', 'UserController@changemail');
 
 });
