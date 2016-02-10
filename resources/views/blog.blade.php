@@ -14,7 +14,7 @@
                     <div class="panel-footer">
                         <i class="fa fa-comments"></i> {{ $posts->comments }} Comments | 
                         <span class="glyphicon glyphicon-time"></span> Posted: {{ $posts->created_at }}
-                        @if(Auth::user()->name == $post->creator)
+                        @if(Auth::user()->name == $posts->creator)
                         | <a href='/post/{{ $post->id }}/delete'>Delete</a>
                         @endif                        
                 </div>
@@ -52,6 +52,9 @@
                 </div>
                 <div class="panel-footer">
                 <i class="fa fa-comments"></i> Posted by <a href='/profile/{{ $comment->creator}}'>{{{ $comment->creator }}}</a> | <span class="glyphicon glyphicon-time"></span> Posted: {{ $comment->created_at }}
+                    @if(Auth::user()->name == $comment->creator)
+                    | <a href='/comment/{{ $comment->id }}/delete'>Delete</a>
+                    @endif                   
                 </div>
             </div>  
 

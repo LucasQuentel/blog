@@ -63,4 +63,16 @@ class BlogController extends Controller
         $posts = DB::table('posts')->orderBy('id', 'desc')->get();
         return view('home', compact('posts'))->with('all',$all);
     }
+
+    public function deletecom($id) {
+        $com = DB::table('comments')->where('id',$id)->first();
+        $pid = $com->postID;
+        if(Auth::user()->name == $com->creator) {
+            DB::table('posts')->where('id',$com->postID)->decrement('comments');            
+            DB::table('comments')->where('id',$id)->delete();
+        }
+        $posts = DB::table('posts')->where('id', $pid)->first();
+        $comments = DB::table('comments')->where('postID', $pid)->orderBy('id', 'desc')->get();
+        return view('blog')->with('posts',$posts)->with('comments',$comments);
+    }
 }
