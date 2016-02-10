@@ -1,6 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
+
+@if(Config::get('global.registration') == true )
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -79,4 +81,11 @@
         </div>
     </div>
 </div>
+@else
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="alert alert-info">The admin currently closed the registration.</div>
+        </div>
+    </div>
+@endif
 @endsection

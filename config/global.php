@@ -56,6 +56,14 @@ return [
     'custom' => 'Full Hyperlink to the CSS File here',
 
 
+    /*
+    | Registration
+    | - Here you can close the registration or leave it open.
+    | - Possible inputs: true, false
+     */
+    'registration' => true,
+
+
 
 
 ];
