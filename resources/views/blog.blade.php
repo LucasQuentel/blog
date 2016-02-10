@@ -14,6 +14,9 @@
                     <div class="panel-footer">
                         <i class="fa fa-comments"></i> {{ $posts->comments }} Comments | 
                         <span class="glyphicon glyphicon-time"></span> Posted: {{ $posts->created_at }}
+                        @if(Auth::user()->name == $post->creator)
+                        | <a href='/post/{{ $post->id }}/delete'>Delete</a>
+                        @endif                        
                 </div>
             </div
 
