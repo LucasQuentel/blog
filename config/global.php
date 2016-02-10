@@ -64,6 +64,14 @@ return [
     'registration' => true,
 
 
+    /*
+    | Post Writing Allowance
+    | - Here you can select, who can write posts and who can not.
+    | - Possible inputs: admins,all
+     */
+    'allowance' => 'all',
+
+
 
 
 ];

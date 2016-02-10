@@ -4,6 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
+            @if(Config::get('global.allowance') == 'all' OR in_array(Auth::user()->name, Config::get('global.admins')))
             <div class="panel panel-default">
                 <div class="panel-heading">Publish a blog article</div>
 
@@ -30,7 +31,9 @@
             </form>
                 </div>
             </div>
-
+            @else
+            <div class="alert alert-info">The admin doesn't allow you to write posts right now.</div>
+            @endif
             <h1>Latest blogposts    
             <small style="font-size: 50%">
             @if($all)

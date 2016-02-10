@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-                <div class="panel panel-default">
+            <div class="panel panel-default">
                     <div class="panel-heading">
                         <h1>{{ $posts->title }} <small>by <a href='/profile/{{ $posts->creator }}'>{{ $posts->creator }}</a> </small></h1>
                     </div>
@@ -15,7 +15,7 @@
                         <i class="fa fa-comments"></i> {{ $posts->comments }} Comments | 
                         <span class="glyphicon glyphicon-time"></span> Posted: {{ $posts->created_at }}
                         @if(Auth::user()->name == $posts->creator || in_array(Auth::user()->name, Config::get('global.admins')))
-                        | <a href='/post/{{ $post->id }}/delete'>Delete</a>
+                        | <a href='/post/{{ $posts->id }}/delete'>Delete</a>
                         @endif                        
                 </div>
             </div
