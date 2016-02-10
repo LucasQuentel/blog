@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Support\Facades\Auth;
 use DB;
+use Config;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
@@ -56,7 +57,7 @@ class BlogController extends Controller
 
     public function delete($id) {
         $posts = DB::table('posts')->where('id', $id)->first();   
-        if(Auth::user()->name == $posts->creator) {
+        if(Auth::user()->name == $posts->creator || in_array(Auth::user()->name, Config::get('global.admins'))) {
             DB::table('posts')->where('id',$id)->delete();           
         } 
         $all = true;
@@ -67,7 +68,7 @@ class BlogController extends Controller
     public function deletecom($id) {
         $com = DB::table('comments')->where('id',$id)->first();
         $pid = $com->postID;
-        if(Auth::user()->name == $com->creator) {
+        if(Auth::user()->name == $com->creator || in_array(Auth::user()->name, Config::get('global.admins'))) {
             DB::table('posts')->where('id',$com->postID)->decrement('comments');            
             DB::table('comments')->where('id',$id)->delete();
         }

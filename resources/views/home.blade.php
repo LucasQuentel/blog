@@ -54,7 +54,7 @@
                     <div class="panel-footer">
                         <i class="fa fa-comments"></i> <a href='/post/{{ $post->id }}'>{{ $post->comments }} Comments</a> | 
                         <span class="glyphicon glyphicon-time"></span> Posted: {{ $post->created_at }}
-                        @if(Auth::user()->name == $post->creator)
+                        @if(Auth::user()->name == $post->creator ||  in_array(Auth::user()->name, Config::get('global.admins')))
                         | <a href='/post/{{ $post->id }}/delete'>Delete</a>
                         @endif
                 </div>
