@@ -17,7 +17,7 @@ class BlogController extends Controller
         	'title' => 'required|unique:posts|max:255',
         	'textarea' => 'required',
     	]);
-
+        if(Config::get('global.allowance') == 'all' OR in_array(Auth::user()->name, Config::get('global.admins'))) {
     	DB::table('posts')->insert(
     		['title'     => $request->input('title'),
      		'post'       => $request->input('textarea'),
@@ -25,7 +25,7 @@ class BlogController extends Controller
      		'comments'   => 0,
      		'created_at' => date("Y-m-d H:i:s"),
      		'updated_at' => date("Y-m-d H:i:s")]);
-
+        }
     	$posts = DB::table('posts')->orderBy('id', 'desc')->get();
         return view('home', compact('posts'));
     }   
