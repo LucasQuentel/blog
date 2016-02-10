@@ -39,6 +39,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/home', 'HomeController@index');   
     Route::get('/home/me','HomeController@me');
     Route::get('/post/{id}','BlogController@show');
+    Route::get('/post/{id}/delete','BlogController@delete');
     Route::get('/profile/{username}','UserController@show');
     Route::get('/admin','AdminController@index');
     Route::get('/settings', 'UserController@settings');
